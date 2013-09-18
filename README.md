@@ -1,0 +1,4 @@
+scala
+=====
+
+coursera scala assignement
