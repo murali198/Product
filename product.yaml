@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: product-deployment
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: product
+      version: "v1"
+  template:
+    metadata:
+      labels:
+        app: product
+        version: "v1"
+    spec:
+      containers:
+        - name: product-pod
+          image: product:latest
+          imagePullPolicy: Never
+          ports:
+            - name: product-port
+              containerPort: 8080
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config   # hostname-config
+                  key: POSTGRES_SERVICE   # postgres-service_host
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: "product-port"
+  selector:
+    app: product
+    version: "v1"
+
+
+
