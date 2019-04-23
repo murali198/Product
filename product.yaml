@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: product-pod
-          image: product:latest
+          image: product:1.0.0
           imagePullPolicy: Never
           ports:
             - name: product-port

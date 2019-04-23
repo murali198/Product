@@ -1,0 +1,14 @@
+spring:
+   application:
+      name: Product
+   datasource:
+      driver-class-name: org.h2.Driver
+      url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+      username: sa
+      password: sa
+   main:
+      allow-bean-definition-overriding: true      
+   jpa:
+      hibernate:
+         dialect: org.hibernate.dialect.H2Dialect
+         ddl-auto: create   

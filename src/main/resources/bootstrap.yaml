@@ -1,0 +1,7 @@
+spring:
+   zipkin:
+      base-url: http://${zipkin-service_SERVICE_HOST}:${zipkin-service_SERVICE_PORT}/
+   sleuth:
+      sampler:   
+         probability: 1
+         percentage: 1.0

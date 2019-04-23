@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+   name: zipkin-deployment
+spec:
+   replicas: 1
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: zipkin
+      version: "v1"
+  template:
+    metadata:
+      labels:
+        app: zipkin
+        version: "v1"
+    spec:
+      containers:
+        - name: zipkin-pod
+          image: openzipkin/zipkin
+          imagePullPolicy: Never
+          ports:
+            - name: zipkin-port
+              containerPort: 9411
+          env:
+            - name: STORAGE_TYPE
+              value: "mem"
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: zipkin-service
+spec:
+  type: NodePort
+  ports:
+    - port: 9411
+      targetPort: "zipkin-port"
+  selector:
+    app: zipkin
+    version: "v1"
