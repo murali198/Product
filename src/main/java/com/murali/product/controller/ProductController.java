@@ -31,7 +31,9 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public Product getProduct(@PathVariable("id") Long id) {
     	log.debug("Getting the products with id ["+ id +"]");
-        return productRepository.findById(id).orElse(null);
+        Product product = productRepository.findById(id).orElse(new Product(-1L, "Not Available", "Product Not avilable", "-1", null));
+        product.setSku("v2");
+        return product;
     }
 
     @PostMapping("/product")

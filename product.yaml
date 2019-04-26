@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: product-deployment
+  name: product-deployment-v1
 spec:
   replicas: 1
   strategy:
@@ -20,7 +20,7 @@ spec:
         version: "v1"
     spec:
       containers:
-        - name: product-pod
+        - name: product-pod-v1
           image: product:1.0.0
           imagePullPolicy: Never
           ports:
@@ -45,23 +45,72 @@ spec:
             - name: POSTGRES_SERVICE
               valueFrom:
                 configMapKeyRef:
-                  name: postgres-config   # hostname-config
-                  key: POSTGRES_SERVICE   # postgres-service_host
+                  name: postgres-config
+                  key: POSTGRES_SERVICE
 
 ---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: product-deployment-v2
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: product
+      version: "v2"
+  template:
+    metadata:
+      labels:
+        app: product
+        version: "v2"
+    spec:
+      containers:
+        - name: product-pod-v2
+          image: product:2.0.0
+          imagePullPolicy: Never
+          ports:
+            - name: product-port
+              containerPort: 8080
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config
+                  key: POSTGRES_SERVICE
 
+
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: product-service
 spec:
-  type: NodePort
+#  type: NodePort
   ports:
     - port: 8080
-      targetPort: "product-port"
+      name: http
+#      targetPort: "product-port"
   selector:
     app: product
-    version: "v1"
-
-
 
