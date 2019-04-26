@@ -1,0 +1,75 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: product-vir-ser
+spec:
+  hosts:
+    - product-service.default.svc.local
+    - product-service
+  gattways:
+    - istio-default-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /product
+          header:
+            version:
+              exact: v1
+      rout:
+        - destination:
+            host: product-service.default.svc.local
+            port: 8080
+            subset: product-v1
+    - match:
+        - uri:
+            prefix: /product
+          header:
+            version:
+              exact: v2
+      rout:
+        - destination:
+            host: product-service.default.svc.local
+            port: 8080
+            subset: product-v2
+    - match:
+        - uri:
+            prefix: /product
+      rout:
+        - destination:
+            host: product-service.default.svc.local
+            port: 8080
+            subset: product-v1
+          weight: 50
+        - destination:
+            host: product-service.default.svc.local
+            port: 8080
+            subset: product-v2
+          weight: 50
+      rout:
+        - destination:
+            host: product-service.default.svc.local
+            port: 8080
+            subset: product-v1
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: product-des-rule
+spec:
+  hosts: product-service.default.svc.local
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+    - name: product-v1
+      labels:
+        app: product
+        version: "v1"
+    - name: product-v2
+      labesl:
+        app: product
+        version: "v2"
+
+
+
