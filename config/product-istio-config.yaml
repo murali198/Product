@@ -23,6 +23,11 @@ spec:
             port: 
                number: 8080
             subset: product-v1
+      fault:
+         delay:
+            percentage:
+               value: 10
+            fixedDelay: 1m   
     - match:
         - uri:
             prefix: /product
@@ -35,6 +40,11 @@ spec:
             port: 
                number: 8080
             subset: product-v2
+      fault:
+         abort:
+            percentage:
+               value: 10
+            httpStatus: 400
     - match:
         - uri:
             prefix: /product
@@ -44,19 +54,13 @@ spec:
             port: 
                number: 8080
             subset: product-v1
-          weight: 10
+          weight: 30
         - destination:
             host: product-service.default.svc.cluster.local
             port: 
                number: 8080
             subset: product-v2
-          weight: 90
-      route:
-        - destination:
-            host: product-service.default.svc.cluster.local
-            port: 
-               number: 8080
-            subset: product-v1
+          weight: 70
 ---
 
 apiVersion: networking.istio.io/v1alpha3
