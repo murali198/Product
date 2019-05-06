@@ -28,6 +28,11 @@ spec:
             percentage:
                value: 10
             fixedDelay: 1m   
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx
+      timeout: 5s   
     - match:
         - uri:
             prefix: /product
@@ -45,6 +50,11 @@ spec:
             percentage:
                value: 10
             httpStatus: 400
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx
+      timeout: 5s   
     - match:
         - uri:
             prefix: /product
@@ -61,6 +71,11 @@ spec:
                number: 9001
             subset: product-v2
           weight: 70
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: 5xx
+      timeout: 5s   
 ---
 
 apiVersion: networking.istio.io/v1alpha3
@@ -72,6 +87,11 @@ spec:
   trafficPolicy:
     loadBalancer:
       simple: RANDOM
+    outlierDetection:
+      consecutiveErrors: 5
+      interval: 5m
+      baseEjectionTime: 15m
+      maxEjectionPercent: 60    
   subsets:
     - name: product-v1
       labels:
