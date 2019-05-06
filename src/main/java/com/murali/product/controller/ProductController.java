@@ -37,9 +37,11 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public Product save(@RequestBody Product product) {
-    	log.debug("Persisting the products details ["+ product +"]");
-        return productRepository.save(product);
+    public Product save(@RequestBody Product input) {
+    	log.debug("Persisting the products details ["+ input +"]");
+    	Product product =  productRepository.save(input);
+    	product.setSku("v2");
+        return product;
     }
 }
 

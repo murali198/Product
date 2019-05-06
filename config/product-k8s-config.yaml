@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: Never
           ports:
             - name: product-port
-              containerPort: 8080
+              containerPort: 9001
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -76,7 +76,7 @@ spec:
           imagePullPolicy: Never
           ports:
             - name: product-port
-              containerPort: 8080
+              containerPort: 9001
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -108,7 +108,7 @@ metadata:
 spec:
 #  type: NodePort
   ports:
-    - port: 8080
+    - port: 9001
       name: http
 #      targetPort: "product-port"
   selector:

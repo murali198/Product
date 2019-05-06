@@ -21,7 +21,7 @@ spec:
         - destination:
             host: product-service.default.svc.cluster.local
             port: 
-               number: 8080
+               number: 9001
             subset: product-v1
       fault:
          delay:
@@ -38,7 +38,7 @@ spec:
         - destination:
             host: product-service.default.svc.cluster.local
             port: 
-               number: 8080
+               number: 9001
             subset: product-v2
       fault:
          abort:
@@ -52,13 +52,13 @@ spec:
         - destination:
             host: product-service.default.svc.cluster.local
             port: 
-               number: 8080
+               number: 9001
             subset: product-v1
           weight: 30
         - destination:
             host: product-service.default.svc.cluster.local
             port: 
-               number: 8080
+               number: 9001
             subset: product-v2
           weight: 70
 ---
@@ -68,7 +68,7 @@ kind: DestinationRule
 metadata:
   name: product-des-rule
 spec:
-  host: "*"
+  host: "product-service.default.svc.cluster.local"
   trafficPolicy:
     loadBalancer:
       simple: RANDOM
